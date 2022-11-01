@@ -1,0 +1,43 @@
+{
+  "id" : "applyPostSubmitFlow",
+  "name" : "apply Post Submit Flow",
+  "version": "1.0",
+  "timeouts" : {
+    "workflowExecTimeout" : {
+      "duration": "PT1M"
+    },
+    "actionExecTimeout": "PT10S"
+  },
+  "autoRetries": false,
+  "start" : "PostSubmitState",
+  "states": [
+    {
+      "name": "PostSubmitState",
+      "type": "operation",
+      "actionMode": "parallel",
+      "actions": [
+        {
+          "name": "Update MCS Profile Data",
+          "functionRef" : "UpdateMCSProfileData"
+        },
+        {
+          "name": "Prepare And Submit Event",
+          "functionRef" : "PrepareAndSubmitEvent"
+        }
+      ],
+      "end":true
+    }
+  ],
+  "functions" : [
+    {
+      "name": "UpdateMCSProfileData",
+      "type": "rest"
+    },
+    {
+      "name": "PrepareAndSubmitEvent",
+      "type": "rest"
+    }
+  ]
+
+
+}

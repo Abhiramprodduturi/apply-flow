@@ -1,0 +1,66 @@
+{
+  "id" : "applyInitFlow",
+  "name" : "apply Init Flow",
+  "version": "1.0",
+  "timeouts" : {
+    "workflowExecTimeout" : {
+      "duration": "PT1M"
+    },
+    "actionExecTimeout": "PT10S"
+  },
+  "autoRetries": false,
+  "start" : "ValidateAndModifyRequest",
+  "states": [
+    {
+      "name": "ValidateAndModifyRequest",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "name": "Validate Request",
+          "functionRef" : "ValidateRequest"
+        },
+        {
+          "name": "Modify Request",
+          "functionRef" : "ModifyRequest"
+        }
+      ],
+      "transition" : "FetchJobDataAndMCSProfileData"
+    },
+    {
+      "name": "FetchJobDataAndMCSProfileData",
+      "type": "operation",
+      "actionMode": "parallel",
+      "actions": [
+        {
+          "name": "Fetch JobData",
+          "functionRef" : "FetchJobData"
+        },
+        {
+          "name": "Fetch MCSProfileData",
+          "functionRef" : "FetchMCSProfileData"
+        }
+      ],
+      "end" : true
+    }
+
+  ],
+  "functions" : [
+    {
+      "name": "ValidateRequest",
+      "type": "rest"
+    },
+    {
+      "name": "ModifyRequest",
+      "type": "rest"
+    },
+    {
+      "name": "FetchJobData",
+      "type": "rest"
+    },
+    {
+      "name": "FetchMCSProfileData",
+      "type": "rest"
+    }
+  ]
+}

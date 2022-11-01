@@ -1,0 +1,67 @@
+{
+  "id" : "applyTenantFlow",
+  "name" : "apply Tenant Flow",
+  "version": "1.0",
+  "timeouts" : {
+    "workflowExecTimeout" : {
+      "duration": "PT1M"
+    },
+    "actionExecTimeout": "PT10S"
+  },
+  "autoRetries": false,
+  "start" : "Init",
+  "states": [
+    {
+      "name": "Init",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "subFlowRef" : {
+            "workflowId": "applyInitFlow",
+            "version": "1.0"
+          }
+        }
+
+      ],
+      "transition" : "StepOperations"
+    },
+    {
+      "name": "StepOperations",
+      "type": "operation",
+      "actionMode": "sequential",
+
+      "actions": [
+        {
+          "condition": "${.isFirstStep}",
+          "name": "Check If Already Applied",
+          "functionRef" : "CheckIfAlreadyApplied"
+        },
+        {
+          "name": "Update Db",
+          "functionRef" : "UpdateDb"
+        },
+        {
+          "condition": "${.isLastStep}",
+          "name": "Put Candidate",
+          "functionRef" : "PutCandidate"
+        }
+      ],
+      "end" : true
+    }
+  ],
+  "functions" : [
+    {
+      "name": "CheckIfAlreadyApplied",
+      "type": "rest"
+    },
+    {
+      "name": "UpdateDb",
+      "type": "rest"
+    },
+    {
+      "name": "PutCandidate",
+      "type": "rest"
+    }
+  ]
+}
